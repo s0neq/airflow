@@ -43,7 +43,7 @@ class YandexCloudBaseHook(BaseHook):
         """Returns connection widgets to add to connection form"""
         from flask_appbuilder.fieldwidgets import BS3PasswordFieldWidget, BS3TextFieldWidget
         from flask_babel import lazy_gettext
-        from wtforms import PasswordField, StringField
+        from wtforms import PasswordField, StringField, BooleanField
 
         return {
             "service_account_json": PasswordField(
@@ -77,6 +77,11 @@ class YandexCloudBaseHook(BaseHook):
                 widget=BS3TextFieldWidget(),
                 description="Optional. This key will be placed to all created Compute nodes"
                 "to let you have a root shell there",
+            ),
+            "metadata_api_provider": BooleanField(
+                lazy_gettext("Use Metadata API Provider"),
+                description="Optional. Get API endpoint based on zone value "
+                "from Compute Instance Metadata Service",
             ),
         }
 
@@ -121,8 +126,11 @@ class YandexCloudBaseHook(BaseHook):
         self.connection_id = yandex_conn_id or connection_id or self.default_conn_name
         self.connection = self.get_connection(self.connection_id)
         self.extras = self.connection.extra_dejson
+        metadata_api_provider = self._get_field("metadata_api_provider", False)
         credentials = self._get_credentials()
-        self.sdk = yandexcloud.SDK(user_agent=self.provider_user_agent(), **credentials)
+        self.sdk = yandexcloud.SDK(
+            user_agent=self.provider_user_agent(), metadata_api_provider=metadata_api_provider, **credentials
+        )
         self.default_folder_id = default_folder_id or self._get_field("folder_id", False)
         self.default_public_ssh_key = default_public_ssh_key or self._get_field("public_ssh_key", False)
         self.client = self.sdk.client

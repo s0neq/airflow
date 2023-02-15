@@ -56,3 +56,8 @@ Folder ID (optional)
 
     If specified, this ID will be used by default during creation of nodes and clusters.
     See https://cloud.yandex.com/docs/resource-manager/operations/folder/get-id for details
+
+Use Metadata API Provider (optional)
+    Boolean, default False
+    Get API endpoint based on zone value from Compute Instance Metadata Service
+    See https://cloud.yandex.com/en-ru/docs/compute/concepts/vm-metadata
