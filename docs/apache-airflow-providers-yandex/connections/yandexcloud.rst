@@ -61,3 +61,7 @@ Use Metadata API Provider (optional)
     Boolean, default False
     Get API endpoint based on zone value from Compute Instance Metadata Service
     See https://cloud.yandex.com/en-ru/docs/compute/concepts/vm-metadata
+
+Endpoint (optional)
+    Default: api.cloud.yandex.net
+    Set API endpoint

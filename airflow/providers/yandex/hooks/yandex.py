@@ -83,6 +83,11 @@ class YandexCloudBaseHook(BaseHook):
                 description="Optional. Get API endpoint based on zone value "
                 "from Compute Instance Metadata Service",
             ),
+            "endpoint": StringField(
+                lazy_gettext("API endpoint"),
+                widget=BS3TextFieldWidget(),
+                description="Optional. Default: api.cloud.yandex.net",
+            ),
         }
 
     @classmethod
@@ -127,9 +132,13 @@ class YandexCloudBaseHook(BaseHook):
         self.connection = self.get_connection(self.connection_id)
         self.extras = self.connection.extra_dejson
         metadata_api_provider = self._get_field("metadata_api_provider", False)
+        endpoint = self._get_field("endpoint", False)
         credentials = self._get_credentials()
         self.sdk = yandexcloud.SDK(
-            user_agent=self.provider_user_agent(), metadata_api_provider=metadata_api_provider, **credentials
+            user_agent=self.provider_user_agent(),
+            metadata_api_provider=metadata_api_provider,
+            endpoint=endpoint,
+            **credentials,
         )
         self.default_folder_id = default_folder_id or self._get_field("folder_id", False)
         self.default_public_ssh_key = default_public_ssh_key or self._get_field("public_ssh_key", False)
