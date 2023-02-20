@@ -420,6 +420,13 @@ repos:
         pass_filenames: true
         files: \.py$
         exclude: ^airflow/_vendor/|^docs/|^tests/
+      - id: check-urlparse-usage-in-code
+        language: pygrep
+        name: Don't use urlparse in code
+        description: urlparse is not recommended, use urlsplit() in code instead
+        entry: "^\\s*from urllib\\.parse import ((\\|, )(urlparse\\|urlunparse))+$"
+        pass_filenames: true
+        files: \.py$
       - id: check-only-new-session-with-provide-session
         name: Check NEW_SESSION is only used with @provide_session
         language: python
@@ -711,7 +718,10 @@ repos:
         language: python
         pass_filenames: true
         files: ^scripts/ci/docker-compose/.+\.ya?ml$|docker-compose\.ya?ml$
-        exclude: ^scripts/ci/docker-compose/grafana/.|^scripts/ci/docker-compose/prometheus.yml
+        exclude: >
+          (?x)
+          ^scripts/ci/docker-compose/grafana/.|
+          ^scripts/ci/docker-compose/.+-config\.ya?ml
         require_serial: true
         additional_dependencies: ['jsonschema>=3.2.0,<5.0', 'PyYAML==5.3.1', 'requests==2.25.0']
       - id: lint-json-schema
